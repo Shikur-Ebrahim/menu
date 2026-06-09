@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Get auth session from cookie (set by client after login)
   const authCookie = request.cookies.get("nemu-auth")?.value;
   let session: { role?: string; status?: string } | null = null;
 
@@ -14,7 +13,7 @@ export function middleware(request: NextRequest) {
     session = null;
   }
 
-  // Protect /dashboard routes
+  // Protect /dashboard routes — must be approved owner (or admin)
   if (pathname.startsWith("/dashboard")) {
     if (!session) {
       return NextResponse.redirect(new URL("/login", request.url));
@@ -27,7 +26,7 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // Protect /admin routes
+  // Protect /admin routes (except login)
   if (pathname.startsWith("/admin") && pathname !== "/admin/login") {
     if (!session) {
       return NextResponse.redirect(new URL("/admin/login", request.url));

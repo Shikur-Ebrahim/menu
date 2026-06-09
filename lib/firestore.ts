@@ -11,7 +11,6 @@ import {
   where,
   orderBy,
   serverTimestamp,
-  QueryConstraint,
 } from "firebase/firestore";
 import { db } from "./firebase";
 import { User, Restaurant, Category, MenuItem, DashboardStats } from "./types";
@@ -80,7 +79,7 @@ export async function getAllRestaurants(): Promise<Restaurant[]> {
 }
 
 export async function updateRestaurant(id: string, data: Partial<Restaurant>): Promise<void> {
-  await updateDoc(doc(db, "restaurants", id), data);
+  await updateDoc(doc(db, "restaurants", id), data as Record<string, unknown>);
 }
 
 // ─── Categories ───────────────────────────────────────────────────────────────
@@ -124,7 +123,7 @@ export async function getMenuItemsByRestaurant(restaurantId: string): Promise<Me
 }
 
 export async function updateMenuItem(id: string, data: Partial<MenuItem>): Promise<void> {
-  await updateDoc(doc(db, "menuItems", id), data);
+  await updateDoc(doc(db, "menuItems", id), data as Record<string, unknown>);
 }
 
 export async function deleteMenuItem(id: string): Promise<void> {
