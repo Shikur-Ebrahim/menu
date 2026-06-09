@@ -32,7 +32,7 @@ export default function QRPage() {
   const handlePrintCard = async () => {
     if (!printCardRef.current) return;
     try {
-      const canvas = await html2canvas(printCardRef.current, { backgroundColor: "#ffffff", scale: 2 });
+      const canvas = await html2canvas(printCardRef.current, { backgroundColor: "#ffffff", scale: 2, useCORS: true });
       downloadPNG(canvas.toDataURL("image/png"), `${restaurant?.slug || "nemu"}-menu-card.png`);
       toast.success("Menu card downloaded!");
     } catch {
@@ -69,12 +69,7 @@ export default function QRPage() {
             ) : (
               <div className="w-48 h-48 mx-auto bg-slate-800 rounded-2xl animate-pulse" />
             )}
-            <div className="text-left bg-slate-900/50 rounded-xl px-4 py-3 border border-white/5">
-              <p className="text-xs text-slate-500 mb-1">Menu URL</p>
-              <a href={menuUrl} target="_blank" rel="noopener noreferrer" className="text-indigo-400 text-xs font-mono hover:text-indigo-300 flex items-center gap-1 break-all">
-                {menuUrl} <ExternalLink size={11} />
-              </a>
-            </div>
+
             <div className="flex gap-3">
               <button onClick={handleDownload} disabled={!qrDataUrl} className="btn-primary flex-1 py-2.5 rounded-xl text-sm flex items-center justify-center gap-2 disabled:opacity-50">
                 <Download size={15} /> Download PNG
@@ -99,7 +94,7 @@ export default function QRPage() {
                 {/* Card header */}
                 <div style={{ background: "linear-gradient(135deg,#4f46e5,#7c3aed)", padding: "24px 20px", textAlign: "center" }}>
                   {restaurant.logo ? (
-                    <img src={restaurant.logo} alt="logo" style={{ width: 60, height: 60, borderRadius: 12, margin: "0 auto 12px", objectFit: "cover" }} />
+                    <img crossOrigin="anonymous" src={restaurant.logo} alt="logo" style={{ width: 60, height: 60, borderRadius: 12, margin: "0 auto 12px", objectFit: "cover" }} />
                   ) : (
                     <div style={{ width: 60, height: 60, borderRadius: 12, background: "rgba(255,255,255,0.2)", margin: "0 auto 12px", display: "flex", alignItems: "center", justifyContent: "center" }}>
                       <span style={{ fontSize: 28 }}>🍽️</span>
