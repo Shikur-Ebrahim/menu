@@ -110,8 +110,7 @@ export default function QRPage() {
                 {/* QR Code */}
                 <div style={{ padding: "24px 20px", textAlign: "center", background: "#ffffff" }}>
                   {qrDataUrl && <img src={qrDataUrl} alt="QR" style={{ width: 180, height: 180, margin: "0 auto" }} />}
-                  <p style={{ color: "#6366f1", fontWeight: 800, fontSize: 18, marginTop: 12, marginBottom: 4 }}>Scan to View Menu</p>
-                  <p style={{ color: "#94a3b8", fontSize: 11 }}>{menuUrl}</p>
+                  <p style={{ color: "#6366f1", fontWeight: 800, fontSize: 18, marginTop: 16, marginBottom: 8 }}>Scan to View Menu</p>
                 </div>
                 {/* Footer */}
                 <div style={{ background: "#f8fafc", padding: "10px 20px", textAlign: "center", borderTop: "1px solid #e2e8f0" }}>
