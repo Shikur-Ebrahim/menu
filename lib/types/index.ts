@@ -22,8 +22,6 @@ export interface Restaurant {
   slug: string;
   logo?: string;
   qrCodeUrl?: string;
-  qrLeftImage?: string;
-  qrRightImage?: string;
   status: UserStatus;
   createdAt: Date | string;
 }
