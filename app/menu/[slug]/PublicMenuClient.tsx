@@ -44,18 +44,18 @@ export function PublicMenuClient({ restaurant, categories, menuItems }: Props) {
   return (
     <div className="min-h-screen bg-slate-50 pb-safe font-sans">
       {/* Mobile-optimized Header */}
-      <div className="relative pt-10 pb-6 px-4 text-center bg-white border-b border-slate-200 shadow-sm">
+      <div className="relative pt-12 pb-8 px-4 text-center bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 shadow-lg rounded-b-3xl">
         {restaurant.logo ? (
-          <div className="w-16 h-16 rounded-2xl overflow-hidden mx-auto mb-3 shadow-md border border-slate-100">
-            <Image src={restaurant.logo} alt="Logo" width={64} height={64} className="object-cover w-full h-full" />
+          <div className="w-20 h-20 rounded-2xl overflow-hidden mx-auto mb-4 shadow-xl border-2 border-white/10">
+            <Image src={restaurant.logo} alt="Logo" width={80} height={80} className="object-cover w-full h-full bg-white" />
           </div>
         ) : (
-          <div className="w-16 h-16 rounded-2xl bg-indigo-600 flex items-center justify-center mx-auto mb-3 shadow-md">
-            <QrCode size={28} className="text-white" />
+          <div className="w-20 h-20 rounded-2xl bg-indigo-600 flex items-center justify-center mx-auto mb-4 shadow-xl border-2 border-white/10">
+            <QrCode size={32} className="text-white" />
           </div>
         )}
-        <h1 className="text-2xl font-black text-slate-900 mb-0.5 tracking-tight">{restaurant.restaurantName}</h1>
-        <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Digital Menu</p>
+        <h1 className="text-2xl font-black text-white mb-1 tracking-tight">{restaurant.restaurantName}</h1>
+        <p className="text-amber-400 text-xs font-black uppercase tracking-[0.2em]">Digital Menu</p>
       </div>
 
       {/* Sticky Mobile Search + Categories */}
