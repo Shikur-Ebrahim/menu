@@ -91,11 +91,15 @@ export async function createCategory(data: Omit<Category, "id">): Promise<string
 export async function getCategoriesByRestaurant(restaurantId: string): Promise<Category[]> {
   const q = query(
     collection(db, "categories"),
-    where("restaurantId", "==", restaurantId),
-    orderBy("createdAt", "asc")
+    where("restaurantId", "==", restaurantId)
   );
   const snap = await getDocs(q);
-  return snap.docs.map((d) => ({ ...d.data(), id: d.id } as Category));
+  const cats = snap.docs.map((d) => ({ ...d.data(), id: d.id } as Category));
+  return cats.sort((a, b) => {
+    const timeA = a.createdAt?.seconds || (typeof a.createdAt === 'string' ? new Date(a.createdAt).getTime() / 1000 : 0);
+    const timeB = b.createdAt?.seconds || (typeof b.createdAt === 'string' ? new Date(b.createdAt).getTime() / 1000 : 0);
+    return timeA - timeB;
+  });
 }
 
 export async function updateCategory(id: string, name: string): Promise<void> {
@@ -115,11 +119,15 @@ export async function createMenuItem(data: Omit<MenuItem, "id">): Promise<string
 export async function getMenuItemsByRestaurant(restaurantId: string): Promise<MenuItem[]> {
   const q = query(
     collection(db, "menuItems"),
-    where("restaurantId", "==", restaurantId),
-    orderBy("createdAt", "desc")
+    where("restaurantId", "==", restaurantId)
   );
   const snap = await getDocs(q);
-  return snap.docs.map((d) => ({ ...d.data(), id: d.id } as MenuItem));
+  const items = snap.docs.map((d) => ({ ...d.data(), id: d.id } as MenuItem));
+  return items.sort((a, b) => {
+    const timeA = a.createdAt?.seconds || (typeof a.createdAt === 'string' ? new Date(a.createdAt).getTime() / 1000 : 0);
+    const timeB = b.createdAt?.seconds || (typeof b.createdAt === 'string' ? new Date(b.createdAt).getTime() / 1000 : 0);
+    return timeB - timeA;
+  });
 }
 
 export async function updateMenuItem(id: string, data: Partial<MenuItem>): Promise<void> {
