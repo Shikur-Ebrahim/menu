@@ -120,7 +120,7 @@ export default function QRPage() {
                 {/* Main Titles */}
                 <div style={{ textAlign: "center", marginTop: "20px" }}>
                   <h1 style={{ fontSize: "42px", fontWeight: 900, color: "#fbbf24", margin: "0 0 8px 0", letterSpacing: "2px" }}>MENU</h1>
-                  <p style={{ fontSize: "16px", color: "#cbd5e1", margin: 0, fontWeight: 500 }}>Scan to view our menu</p>
+                  <p style={{ fontSize: "16px", color: "#cbd5e1", margin: 0, fontWeight: 500 }}>ምናሌያችንን ለማየት ስካን ያድርጉ</p>
                 </div>
 
                 {/* QR Code */}
