@@ -1,0 +1,55 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuth() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function isOwner(userId) {
+      return isAuth() && request.auth.uid == userId;
+    }
+
+    function isApprovedOwner() {
+      return isAuth() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'owner'
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status == 'approved';
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow read: if isAdmin() || isOwner(userId);
+      allow create: if true; // Registration
+      allow update: if isAdmin() || isOwner(userId);
+      allow delete: if isAdmin();
+    }
+
+    // Restaurants collection
+    match /restaurants/{restaurantId} {
+      allow read: if true; // Public can read approved restaurants
+      allow create: if isAdmin() || isApprovedOwner();
+      allow update: if isAdmin() || (isApprovedOwner() && resource.data.ownerId == request.auth.uid);
+      allow delete: if isAdmin();
+    }
+
+    // Categories collection
+    match /categories/{categoryId} {
+      allow read: if true; // Public can read categories
+      allow create: if isAdmin() || (isApprovedOwner() && request.resource.data.restaurantId != null);
+      allow update: if isAdmin() || (isApprovedOwner() && resource.data.restaurantId == get(/databases/$(database)/documents/restaurants/$(resource.data.restaurantId)).data.ownerId);
+      allow delete: if isAdmin() || isApprovedOwner();
+    }
+
+    // Menu items collection
+    match /menuItems/{itemId} {
+      allow read: if true; // Public can read menu items
+      allow create: if isAdmin() || isApprovedOwner();
+      allow update: if isAdmin() || isApprovedOwner();
+      allow delete: if isAdmin() || isApprovedOwner();
+    }
+  }
+}
