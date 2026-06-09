@@ -96,8 +96,8 @@ export async function getCategoriesByRestaurant(restaurantId: string): Promise<C
   const snap = await getDocs(q);
   const cats = snap.docs.map((d) => ({ ...d.data(), id: d.id } as Category));
   return cats.sort((a, b) => {
-    const timeA = a.createdAt?.seconds || (typeof a.createdAt === 'string' ? new Date(a.createdAt).getTime() / 1000 : 0);
-    const timeB = b.createdAt?.seconds || (typeof b.createdAt === 'string' ? new Date(b.createdAt).getTime() / 1000 : 0);
+    const timeA = (a.createdAt as any)?.seconds || (typeof a.createdAt === 'string' ? new Date(a.createdAt).getTime() / 1000 : 0);
+    const timeB = (b.createdAt as any)?.seconds || (typeof b.createdAt === 'string' ? new Date(b.createdAt).getTime() / 1000 : 0);
     return timeA - timeB;
   });
 }
@@ -124,8 +124,8 @@ export async function getMenuItemsByRestaurant(restaurantId: string): Promise<Me
   const snap = await getDocs(q);
   const items = snap.docs.map((d) => ({ ...d.data(), id: d.id } as MenuItem));
   return items.sort((a, b) => {
-    const timeA = a.createdAt?.seconds || (typeof a.createdAt === 'string' ? new Date(a.createdAt).getTime() / 1000 : 0);
-    const timeB = b.createdAt?.seconds || (typeof b.createdAt === 'string' ? new Date(b.createdAt).getTime() / 1000 : 0);
+    const timeA = (a.createdAt as any)?.seconds || (typeof a.createdAt === 'string' ? new Date(a.createdAt).getTime() / 1000 : 0);
+    const timeB = (b.createdAt as any)?.seconds || (typeof b.createdAt === 'string' ? new Date(b.createdAt).getTime() / 1000 : 0);
     return timeB - timeA;
   });
 }

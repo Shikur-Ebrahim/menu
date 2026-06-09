@@ -39,6 +39,7 @@ export default function AdminLoginPage() {
           generatedPassword: "",
           role: "admin",
           status: "approved",
+          createdAt: new Date().toISOString(),
         });
         user = await getUser(firebaseUser.uid);
       }
