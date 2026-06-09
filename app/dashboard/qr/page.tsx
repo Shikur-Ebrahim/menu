@@ -124,27 +124,32 @@ export default function QRPage() {
                 </div>
 
                 {/* QR Code */}
-                <div style={{ background: "white", padding: "16px", borderRadius: "16px", marginTop: "24px", marginBottom: "auto", boxShadow: "0 10px 25px -5px rgba(0,0,0,0.5)", zIndex: 10 }}>
-                  {qrDataUrl && <img src={qrDataUrl} alt="QR" style={{ width: 180, height: 180, display: "block" }} />}
+                <div style={{ background: "white", padding: "16px", borderRadius: "16px", marginTop: "16px", zIndex: 10, boxShadow: "0 10px 25px -5px rgba(0,0,0,0.5)" }}>
+                  {qrDataUrl && <img src={qrDataUrl} alt="QR" style={{ width: 170, height: 170, display: "block" }} />}
                 </div>
 
-                {/* Decorative Bottom Graphics */}
-                {restaurant.qrLeftImage && (
-                  <div style={{ position: "absolute", bottom: "24px", left: "24px", width: "64px", height: "64px" }}>
-                    <img crossOrigin="anonymous" src={restaurant.qrLeftImage} alt="Left decor" style={{ width: "100%", height: "100%", objectFit: "contain", filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.3))" }} />
+                {/* Footer Row (Images + Text) */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", width: "100%", marginTop: "auto", paddingTop: "16px" }}>
+                  {/* Left Image */}
+                  <div style={{ width: "70px", height: "70px", display: "flex", alignItems: "flex-end", justifyContent: "flex-start" }}>
+                    {restaurant.qrLeftImage && (
+                      <img crossOrigin="anonymous" src={restaurant.qrLeftImage} alt="Left decor" style={{ width: "100%", height: "100%", objectFit: "contain", filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.3))" }} />
+                    )}
                   </div>
-                )}
-                {restaurant.qrRightImage && (
-                  <div style={{ position: "absolute", bottom: "24px", right: "24px", width: "64px", height: "64px" }}>
-                    <img crossOrigin="anonymous" src={restaurant.qrRightImage} alt="Right decor" style={{ width: "100%", height: "100%", objectFit: "contain", filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.3))" }} />
-                  </div>
-                )}
 
-                {/* Footer */}
-                <div style={{ marginTop: "20px", paddingBottom: "4px", zIndex: 10 }}>
-                  <p style={{ fontSize: "10px", color: "#94a3b8", margin: 0, textTransform: "uppercase", letterSpacing: "1px", fontWeight: 600 }}>
-                    Developed by SHIKUR EBRAHIM
-                  </p>
+                  {/* Center Text */}
+                  <div style={{ paddingBottom: "10px", textAlign: "center", flex: 1 }}>
+                    <p style={{ fontSize: "8px", color: "#94a3b8", margin: 0, textTransform: "uppercase", letterSpacing: "1px", fontWeight: 700 }}>
+                      Developed by SHIKUR EBRAHIM
+                    </p>
+                  </div>
+
+                  {/* Right Image */}
+                  <div style={{ width: "70px", height: "70px", display: "flex", alignItems: "flex-end", justifyContent: "flex-end" }}>
+                    {restaurant.qrRightImage && (
+                      <img crossOrigin="anonymous" src={restaurant.qrRightImage} alt="Right decor" style={{ width: "100%", height: "100%", objectFit: "contain", filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.3))" }} />
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
