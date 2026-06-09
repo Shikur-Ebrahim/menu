@@ -129,8 +129,16 @@ export default function QRPage() {
                 </div>
 
                 {/* Decorative Bottom Graphics */}
-                <div style={{ position: "absolute", bottom: "30px", left: "20px", fontSize: "40px", opacity: 0.9 }}>🥗</div>
-                <div style={{ position: "absolute", bottom: "30px", right: "20px", fontSize: "40px", opacity: 0.9 }}>🍕</div>
+                {restaurant.qrLeftImage && (
+                  <div style={{ position: "absolute", bottom: "24px", left: "24px", width: "64px", height: "64px" }}>
+                    <img crossOrigin="anonymous" src={restaurant.qrLeftImage} alt="Left decor" style={{ width: "100%", height: "100%", objectFit: "contain", filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.3))" }} />
+                  </div>
+                )}
+                {restaurant.qrRightImage && (
+                  <div style={{ position: "absolute", bottom: "24px", right: "24px", width: "64px", height: "64px" }}>
+                    <img crossOrigin="anonymous" src={restaurant.qrRightImage} alt="Right decor" style={{ width: "100%", height: "100%", objectFit: "contain", filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.3))" }} />
+                  </div>
+                )}
 
                 {/* Footer */}
                 <div style={{ marginTop: "20px", paddingBottom: "4px", zIndex: 10 }}>
