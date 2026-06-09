@@ -88,28 +88,60 @@ export default function QRPage() {
               {/* The actual printable card */}
               <div
                 ref={printCardRef}
-                className="bg-white rounded-2xl overflow-hidden mx-auto"
-                style={{ width: 300, fontFamily: "sans-serif" }}
+                className="overflow-hidden mx-auto relative"
+                style={{
+                  width: 340,
+                  height: 520,
+                  fontFamily: "'Inter', sans-serif",
+                  background: "linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%)",
+                  color: "white",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "32px 20px 20px",
+                  boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
+                  borderRadius: "16px"
+                }}
               >
-                {/* Card header */}
-                <div style={{ background: "linear-gradient(135deg,#4f46e5,#7c3aed)", padding: "24px 20px", textAlign: "center" }}>
+                {/* Header: Logo and Name */}
+                <div style={{ display: "flex", alignItems: "center", gap: "12px", width: "100%", justifyContent: "center" }}>
                   {restaurant.logo ? (
-                    <img crossOrigin="anonymous" src={restaurant.logo} alt="logo" style={{ width: 60, height: 60, borderRadius: 12, margin: "0 auto 12px", objectFit: "cover" }} />
+                    <img crossOrigin="anonymous" src={restaurant.logo} alt="logo" style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", border: "2px solid #fbbf24" }} />
                   ) : (
-                    <div style={{ width: 60, height: 60, borderRadius: 12, background: "rgba(255,255,255,0.2)", margin: "0 auto 12px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <span style={{ fontSize: 28 }}>🍽️</span>
-                    </div>
+                    <span style={{ fontSize: "28px" }}>🍽️</span>
                   )}
-                  <p style={{ color: "#ffffff", fontWeight: 800, fontSize: 20, margin: 0 }}>{restaurant.restaurantName}</p>
+                  <h2 style={{ fontSize: "22px", fontWeight: 900, textTransform: "uppercase", letterSpacing: "1px", margin: 0, color: "#f8fafc" }}>
+                    {restaurant.restaurantName}
+                  </h2>
                 </div>
+
+                {/* Main Titles */}
+                <div style={{ textAlign: "center", marginTop: "20px" }}>
+                  <h1 style={{ fontSize: "42px", fontWeight: 900, color: "#fbbf24", margin: "0 0 8px 0", letterSpacing: "2px" }}>MENU</h1>
+                  <p style={{ fontSize: "16px", color: "#cbd5e1", margin: 0, fontWeight: 500 }}>Scan to view our menu</p>
+                </div>
+
                 {/* QR Code */}
-                <div style={{ padding: "24px 20px", textAlign: "center", background: "#ffffff" }}>
-                  {qrDataUrl && <img src={qrDataUrl} alt="QR" style={{ width: 180, height: 180, margin: "0 auto" }} />}
-                  <p style={{ color: "#6366f1", fontWeight: 800, fontSize: 18, marginTop: 16, marginBottom: 8 }}>Scan to View Menu</p>
+                <div style={{ background: "white", padding: "16px", borderRadius: "16px", marginTop: "24px", marginBottom: "24px", boxShadow: "0 10px 25px -5px rgba(0,0,0,0.5)" }}>
+                  {qrDataUrl && <img src={qrDataUrl} alt="QR" style={{ width: 180, height: 180, display: "block" }} />}
                 </div>
+
+                {/* Fallback Link */}
+                <div style={{ textAlign: "center", marginBottom: "auto" }}>
+                  <p style={{ fontSize: "11px", color: "#94a3b8", margin: "0 0 4px 0" }}>If not working, visit:</p>
+                  <p style={{ fontSize: "12px", color: "#fbbf24", fontWeight: 600, margin: 0 }}>{menuUrl}</p>
+                </div>
+
+                {/* Decorative Bottom Graphics */}
+                <div style={{ position: "absolute", bottom: "20px", left: "20px", fontSize: "40px", opacity: 0.9 }}>🥗</div>
+                <div style={{ position: "absolute", bottom: "20px", right: "20px", fontSize: "40px", opacity: 0.9 }}>🍕</div>
+
                 {/* Footer */}
-                <div style={{ background: "#f8fafc", padding: "10px 20px", textAlign: "center", borderTop: "1px solid #e2e8f0" }}>
-                  <p style={{ color: "#94a3b8", fontSize: 10, margin: 0 }}>Powered by Nemu Digital Menu</p>
+                <div style={{ marginTop: "30px", paddingBottom: "4px" }}>
+                  <p style={{ fontSize: "10px", color: "#64748b", margin: 0, textTransform: "uppercase", letterSpacing: "1px" }}>
+                    Powered by Nemu Digital Menu
+                  </p>
                 </div>
               </div>
             </div>
