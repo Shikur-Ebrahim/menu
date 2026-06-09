@@ -106,14 +106,15 @@ export default function QRPage() {
               >
                 {/* Header: Logo and Name */}
                 <div style={{ display: "flex", alignItems: "center", gap: "12px", width: "100%", justifyContent: "center" }}>
-                  {restaurant.logo ? (
-                    <img crossOrigin="anonymous" src={restaurant.logo} alt="logo" style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", border: "2px solid #fbbf24" }} />
-                  ) : (
-                    <span style={{ fontSize: "28px" }}>🍽️</span>
+                  {restaurant.logo && (
+                    <img crossOrigin="anonymous" src={restaurant.logo} alt="logo left" style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", border: "2px solid #fbbf24" }} />
                   )}
-                  <h2 style={{ fontSize: "22px", fontWeight: 900, textTransform: "uppercase", letterSpacing: "1px", margin: 0, color: "#f8fafc" }}>
+                  <h2 style={{ fontSize: "22px", fontWeight: 900, textTransform: "uppercase", letterSpacing: "1px", margin: 0, color: "#f8fafc", textAlign: "center" }}>
                     {restaurant.restaurantName}
                   </h2>
+                  {restaurant.logo && (
+                    <img crossOrigin="anonymous" src={restaurant.logo} alt="logo right" style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", border: "2px solid #fbbf24" }} />
+                  )}
                 </div>
 
                 {/* Main Titles */}
@@ -123,24 +124,18 @@ export default function QRPage() {
                 </div>
 
                 {/* QR Code */}
-                <div style={{ background: "white", padding: "16px", borderRadius: "16px", marginTop: "24px", marginBottom: "24px", boxShadow: "0 10px 25px -5px rgba(0,0,0,0.5)" }}>
+                <div style={{ background: "white", padding: "16px", borderRadius: "16px", marginTop: "24px", marginBottom: "auto", boxShadow: "0 10px 25px -5px rgba(0,0,0,0.5)", zIndex: 10 }}>
                   {qrDataUrl && <img src={qrDataUrl} alt="QR" style={{ width: 180, height: 180, display: "block" }} />}
                 </div>
 
-                {/* Fallback Link */}
-                <div style={{ textAlign: "center", marginBottom: "auto" }}>
-                  <p style={{ fontSize: "11px", color: "#94a3b8", margin: "0 0 4px 0" }}>If not working, visit:</p>
-                  <p style={{ fontSize: "12px", color: "#fbbf24", fontWeight: 600, margin: 0 }}>{menuUrl}</p>
-                </div>
-
                 {/* Decorative Bottom Graphics */}
-                <div style={{ position: "absolute", bottom: "20px", left: "20px", fontSize: "40px", opacity: 0.9 }}>🥗</div>
-                <div style={{ position: "absolute", bottom: "20px", right: "20px", fontSize: "40px", opacity: 0.9 }}>🍕</div>
+                <div style={{ position: "absolute", bottom: "30px", left: "20px", fontSize: "40px", opacity: 0.9 }}>🥗</div>
+                <div style={{ position: "absolute", bottom: "30px", right: "20px", fontSize: "40px", opacity: 0.9 }}>🍕</div>
 
                 {/* Footer */}
-                <div style={{ marginTop: "30px", paddingBottom: "4px" }}>
-                  <p style={{ fontSize: "10px", color: "#64748b", margin: 0, textTransform: "uppercase", letterSpacing: "1px" }}>
-                    Powered by Nemu Digital Menu
+                <div style={{ marginTop: "20px", paddingBottom: "4px", zIndex: 10 }}>
+                  <p style={{ fontSize: "10px", color: "#94a3b8", margin: 0, textTransform: "uppercase", letterSpacing: "1px", fontWeight: 600 }}>
+                    Developed by SHIKUR EBRAHIM
                   </p>
                 </div>
               </div>
