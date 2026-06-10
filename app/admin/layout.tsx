@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
@@ -23,13 +23,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  useEffect(() => {
-    if (!loading) {
-      if (!user) { router.push("/login"); return; }
-      if (user.role !== "admin") { router.push("/login"); return; }
-    }
-  }, [user, loading, router]);
-
   const handleLogout = async () => {
     await signOut();
     clearAuth();
@@ -39,7 +32,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   };
 
   if (loading) return <PageLoader />;
-  if (!user || user.role !== "admin") return null;
+  if (!user) return <PageLoader />;
 
   return (
     <div className="min-h-screen bg-slate-950 flex">
