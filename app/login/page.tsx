@@ -7,13 +7,17 @@ import { z } from "zod";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { QrCode, Phone, ArrowRight } from "lucide-react";
+import { QrCode, Phone, ArrowRight, Lock, Mail } from "lucide-react";
 import { signInWithEmail, phoneToEmail } from "@/lib/auth";
-import { getUserByPhone } from "@/lib/firestore";
+import { getUser } from "@/lib/firestore";
 import { validateEthiopianPhone } from "@/lib/utils";
 
 const schema = z.object({
-  phoneNumber: z.string().refine(validateEthiopianPhone, "Enter a valid Ethiopian phone number"),
+  identifier: z.string().min(1, "Please enter your email or phone number").refine((val) => {
+    if (val.includes("@")) return z.string().email().safeParse(val).success;
+    return validateEthiopianPhone(val);
+  }, "Enter a valid email or Ethiopian phone number"),
+  password: z.string().min(1, "Password is required"),
 });
 type FormData = z.infer<typeof schema>;
 
@@ -28,20 +32,26 @@ export default function LoginPage() {
   const onSubmit = async (data: FormData) => {
     setLoading(true);
     try {
-      const user = await getUserByPhone(data.phoneNumber);
+      // Sign in directly with email/password
+      const isEmail = data.identifier.includes("@");
+      const email = isEmail ? data.identifier : phoneToEmail(data.identifier);
+      const firebaseUser = await signInWithEmail(email, data.password);
+
+      // After successful authentication, fetch the user document using the UID
+      const user = await getUser(firebaseUser.uid);
       if (!user) {
-        toast.error("No account found for this phone number.");
+        toast.error("Account data not found. Please contact support.");
         return;
       }
-
-      await signInWithEmail(user.authEmail, user.generatedPassword);
 
       // Store session cookie for middleware
       document.cookie = `nemu-auth=${encodeURIComponent(JSON.stringify({ role: user.role, status: user.status }))}; path=/; max-age=86400`;
 
-      if (user.status === "pending") {
+      if (user.role === "admin") {
+        router.push("/admin/dashboard");
+      } else if (user.role === "owner" && user.status === "pending") {
         router.push("/pending");
-      } else if (user.status === "approved") {
+      } else if (user.role === "owner" && user.status === "approved") {
         router.push("/dashboard");
       } else {
         toast.error("Your account has been rejected or suspended. Please contact support.");
@@ -69,27 +79,45 @@ export default function LoginPage() {
             <span className="text-2xl font-black text-white font-display">Nemu</span>
           </Link>
           <h1 className="text-3xl font-black text-white font-display">Welcome back</h1>
-          <p className="text-slate-400 mt-2">Sign in with your phone number</p>
+          <p className="text-slate-400 mt-2">Sign in to your account</p>
         </div>
 
         <div className="glass-card p-8 rounded-3xl" style={{ border: "1px solid rgba(255,255,255,0.1)" }}>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div>
-              <label htmlFor="phoneNumber" className="block text-sm font-medium text-slate-300 mb-1.5">
-                Phone Number
+              <label htmlFor="identifier" className="block text-sm font-medium text-slate-300 mb-1.5">
+                Email or Phone Number
               </label>
               <div className="relative">
-                <Phone size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
-                  id="phoneNumber"
-                  {...register("phoneNumber")}
-                  placeholder="0912345678"
-                  type="tel"
+                  id="identifier"
+                  {...register("identifier")}
+                  placeholder="admin@gmail.com or 0912345678"
                   className="input-field pl-10"
                 />
               </div>
-              {errors.phoneNumber && (
-                <p className="mt-1.5 text-xs text-red-400">{errors.phoneNumber.message}</p>
+              {errors.identifier && (
+                <p className="mt-1.5 text-xs text-red-400">{errors.identifier.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-slate-300 mb-1.5">
+                Password
+              </label>
+              <div className="relative">
+                <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  id="password"
+                  type="password"
+                  {...register("password")}
+                  placeholder="Enter your password"
+                  className="input-field pl-10"
+                />
+              </div>
+              {errors.password && (
+                <p className="mt-1.5 text-xs text-red-400">{errors.password.message}</p>
               )}
             </div>
 

@@ -2,11 +2,12 @@
 
 import { useState, useRef } from "react";
 import toast from "react-hot-toast";
-import { Save, Camera, Building2 } from "lucide-react";
+import { Save, Camera, Building2, Lock } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRestaurant } from "@/hooks/useRestaurant";
 import { updateRestaurant } from "@/lib/firestore";
 import { uploadToCloudinary } from "@/lib/cloudinary";
+import { updateUserPassword } from "@/lib/auth";
 import { PageLoader } from "@/components/ui/Spinner";
 import Image from "next/image";
 
@@ -17,6 +18,13 @@ export default function SettingsPage() {
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string>("");
   const [restaurantName, setRestaurantName] = useState(user?.restaurantName || "");
+  
+  // Password state
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [passwordSaving, setPasswordSaving] = useState(false);
+  
   const fileRef = useRef<HTMLInputElement>(null);
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,6 +49,35 @@ export default function SettingsPage() {
       toast.error("Failed to save settings");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPassword !== confirmNewPassword) {
+      toast.error("New passwords do not match");
+      return;
+    }
+    if (newPassword.length < 6) {
+      toast.error("New password must be at least 6 characters");
+      return;
+    }
+    
+    setPasswordSaving(true);
+    try {
+      await updateUserPassword(currentPassword, newPassword);
+      toast.success("Password updated successfully!");
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmNewPassword("");
+    } catch (error: any) {
+      if (error.message.includes("auth/invalid-credential") || error.message.includes("wrong-password")) {
+        toast.error("Incorrect current password");
+      } else {
+        toast.error("Failed to update password");
+      }
+    } finally {
+      setPasswordSaving(false);
     }
   };
 
@@ -107,18 +144,11 @@ export default function SettingsPage() {
               <label className="block text-sm font-medium text-slate-300 mb-1.5">Phone Number</label>
               <input
                 value={user?.phoneNumber || ""}
+                disabled
                 readOnly
-                className="input-field opacity-60 cursor-not-allowed"
+                className="input-field opacity-50 cursor-not-allowed bg-slate-900"
               />
               <p className="text-xs text-slate-500 mt-1">Contact support to change your phone number.</p>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">Menu URL Slug</label>
-              <input
-                value={restaurant?.slug || "—"}
-                readOnly
-                className="input-field opacity-60 cursor-not-allowed font-mono text-xs"
-              />
             </div>
           </div>
         </div>
@@ -126,8 +156,67 @@ export default function SettingsPage() {
         <div className="border-t border-white/5 pt-4">
           <button onClick={handleSave} disabled={saving} className="btn-primary px-6 py-3 rounded-xl flex items-center gap-2">
             <Save size={16} />
-            {saving ? "Saving..." : "Save Changes"}
+            {saving ? "Saving..." : "Save Profile Details"}
           </button>
+        </div>
+      </div>
+
+      {/* Security Section */}
+      <div className="glass-card p-6 rounded-2xl space-y-6 mt-6" style={{ border: "1px solid rgba(255,255,255,0.06)" }}>
+        <div>
+          <h2 className="text-lg font-bold text-white mb-2">Change Password</h2>
+          <p className="text-sm text-slate-400 mb-4">Keep your account secure by regularly updating your password.</p>
+          
+          <form onSubmit={handlePasswordChange} className="space-y-4 max-w-md">
+            <div>
+              <label className="block text-sm font-medium text-slate-300 mb-1.5">Current Password</label>
+              <div className="relative">
+                <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  className="input-field pl-10"
+                  required
+                />
+              </div>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-slate-300 mb-1.5">New Password</label>
+              <div className="relative">
+                <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="input-field pl-10"
+                  required
+                />
+              </div>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-slate-300 mb-1.5">Confirm New Password</label>
+              <div className="relative">
+                <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="password"
+                  value={confirmNewPassword}
+                  onChange={(e) => setConfirmNewPassword(e.target.value)}
+                  className="input-field pl-10"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <button type="submit" disabled={passwordSaving} className="w-full bg-slate-800 hover:bg-slate-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+                <Lock size={16} />
+                {passwordSaving ? "Updating Password..." : "Update Password"}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>

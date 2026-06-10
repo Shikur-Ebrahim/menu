@@ -15,6 +15,14 @@ export interface User {
   createdAt: Date | string;
 }
 
+export interface PaymentAccount {
+  id: string;
+  bankName: string;
+  accountName: string;
+  accountNumber: string;
+  logoUrl?: string;
+}
+
 export interface Restaurant {
   id: string;
   ownerId: string;
@@ -22,6 +30,7 @@ export interface Restaurant {
   slug: string;
   logo?: string;
   qrCodeUrl?: string;
+  paymentAccounts?: PaymentAccount[];
   status: UserStatus;
   createdAt: Date | string;
 }

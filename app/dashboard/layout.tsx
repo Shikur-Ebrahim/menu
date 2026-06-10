@@ -9,7 +9,7 @@ import { useAuthStore } from "@/store/authStore";
 import { PageLoader } from "@/components/ui/Spinner";
 import {
   QrCode, LayoutDashboard, List, UtensilsCrossed,
-  Settings, LogOut, Menu, X, ChevronRight,
+  Settings, LogOut, Menu, X, ChevronRight, Wallet
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -17,6 +17,7 @@ const navItems = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
   { href: "/dashboard/categories", label: "Categories", icon: List },
   { href: "/dashboard/menu", label: "Menu Items", icon: UtensilsCrossed },
+  { href: "/dashboard/accounts", label: "Accounts", icon: Wallet },
   { href: "/dashboard/qr", label: "QR Code", icon: QrCode },
   { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];

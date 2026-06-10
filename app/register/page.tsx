@@ -7,14 +7,19 @@ import { z } from "zod";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { QrCode, Building2, Phone, ArrowRight, CheckCircle } from "lucide-react";
-import { registerWithEmail, phoneToEmail, generatePassword } from "@/lib/auth";
+import { QrCode, Building2, Phone, ArrowRight, CheckCircle, Lock } from "lucide-react";
+import { registerWithEmail, phoneToEmail } from "@/lib/auth";
 import { createUser } from "@/lib/firestore";
 import { validateEthiopianPhone } from "@/lib/utils";
 
 const schema = z.object({
   restaurantName: z.string().min(2, "Restaurant name must be at least 2 characters"),
   phoneNumber: z.string().refine(validateEthiopianPhone, "Enter a valid Ethiopian phone number (e.g. 0912345678)"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  confirmPassword: z.string()
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
 });
 
 type FormData = z.infer<typeof schema>;
@@ -32,14 +37,12 @@ export default function RegisterPage() {
     setLoading(true);
     try {
       const email = phoneToEmail(data.phoneNumber);
-      const password = generatePassword();
-      const firebaseUser = await registerWithEmail(email, password);
+      const firebaseUser = await registerWithEmail(email, data.password);
 
       await createUser(firebaseUser.uid, {
         restaurantName: data.restaurantName,
         phoneNumber: data.phoneNumber,
         authEmail: email,
-        generatedPassword: password,
         role: "owner",
         status: "pending",
         createdAt: new Date().toISOString(),
@@ -130,6 +133,46 @@ export default function RegisterPage() {
               </div>
               {errors.phoneNumber && (
                 <p className="mt-1.5 text-xs text-red-400">{errors.phoneNumber.message}</p>
+              )}
+            </div>
+
+            {/* Password */}
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-slate-300 mb-1.5">
+                Password
+              </label>
+              <div className="relative">
+                <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  id="password"
+                  type="password"
+                  {...register("password")}
+                  placeholder="Create a strong password"
+                  className="input-field pl-10"
+                />
+              </div>
+              {errors.password && (
+                <p className="mt-1.5 text-xs text-red-400">{errors.password.message}</p>
+              )}
+            </div>
+
+            {/* Confirm Password */}
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-300 mb-1.5">
+                Confirm Password
+              </label>
+              <div className="relative">
+                <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  id="confirmPassword"
+                  type="password"
+                  {...register("confirmPassword")}
+                  placeholder="Confirm your password"
+                  className="input-field pl-10"
+                />
+              </div>
+              {errors.confirmPassword && (
+                <p className="mt-1.5 text-xs text-red-400">{errors.confirmPassword.message}</p>
               )}
             </div>
 

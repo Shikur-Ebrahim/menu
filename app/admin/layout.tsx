@@ -25,8 +25,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     if (!loading) {
-      if (!user) { router.push("/admin/login"); return; }
-      if (user.role !== "admin") { router.push("/admin/login"); return; }
+      if (!user) { router.push("/login"); return; }
+      if (user.role !== "admin") { router.push("/login"); return; }
     }
   }, [user, loading, router]);
 
@@ -34,7 +34,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     await signOut();
     clearAuth();
     document.cookie = "nemu-auth=; path=/; max-age=0";
-    router.push("/admin/login");
+    router.push("/login");
     toast.success("Logged out");
   };
 

@@ -14,22 +14,26 @@ export default function QRPage() {
   const { user } = useAuth();
   const { restaurant, loading } = useRestaurant(user?.uid ?? null);
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
+  const [tableNumber, setTableNumber] = useState<string>("");
   const printCardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (restaurant?.slug) {
-      const url = getMenuUrl(restaurant.slug);
+      let url = getMenuUrl(restaurant.slug);
+      if (tableNumber.trim()) {
+        url += `?table=${encodeURIComponent(tableNumber.trim())}`;
+      }
       generateQRDataUrl(url).then(setQrDataUrl).catch(() => toast.error("Failed to generate QR code"));
     }
-  }, [restaurant?.slug]);
+  }, [restaurant?.slug, tableNumber]);
 
-  const handleDownload = () => {
-    if (!qrDataUrl) return;
-    downloadPNG(qrDataUrl, `${restaurant?.slug || "nemu"}-qr.png`);
-    toast.success("QR code downloaded!");
-  };
 
   const handlePrintCard = async () => {
+    if (!qrDataUrl) return;
+    if (!tableNumber.trim()) {
+      toast.error("Please enter a table number before printing");
+      return;
+    }
     if (!printCardRef.current) return;
     try {
       const canvas = await html2canvas(printCardRef.current, { backgroundColor: "#ffffff", scale: 2, useCORS: true });
@@ -71,12 +75,22 @@ export default function QRPage() {
             )}
 
             <div className="flex gap-3">
-              <button onClick={handleDownload} disabled={!qrDataUrl} className="btn-primary flex-1 py-2.5 rounded-xl text-sm flex items-center justify-center gap-2 disabled:opacity-50">
-                <Download size={15} /> Download PNG
+              <button onClick={handlePrintCard} disabled={!qrDataUrl} className="w-full py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white transition-colors disabled:opacity-50 shadow-lg shadow-indigo-500/20">
+                <Printer size={18} /> Print Menu Card
               </button>
-              <button onClick={handlePrintCard} disabled={!qrDataUrl} className="flex-1 py-2.5 rounded-xl text-sm flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-white transition-colors disabled:opacity-50">
-                <Printer size={15} /> Print Card
-              </button>
+            </div>
+
+            {/* Table Number Input */}
+            <div className="mt-6 border-t border-white/5 pt-6 text-left">
+              <label className="block text-sm font-medium text-slate-300 mb-2">Assign Table Number <span className="text-red-400">*</span></label>
+              <input
+                type="text"
+                value={tableNumber}
+                onChange={(e) => setTableNumber(e.target.value)}
+                placeholder="e.g. 5 or T-12"
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              />
+              <p className="text-xs text-slate-500 mt-2">Entering a table number updates the QR code specifically for this table.</p>
             </div>
           </div>
 
@@ -129,7 +143,12 @@ export default function QRPage() {
                 </div>
 
                 {/* Footer */}
-                <div style={{ marginTop: "20px", paddingBottom: "4px", zIndex: 10 }}>
+                <div style={{ marginTop: "20px", paddingBottom: "4px", zIndex: 10, textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                  {tableNumber && (
+                    <div style={{ background: "#fbbf24", color: "#0f172a", padding: "4px 16px", borderRadius: "100px", fontWeight: 900, fontSize: "14px", marginBottom: "12px", letterSpacing: "1px" }}>
+                      TABLE {tableNumber.toUpperCase()}
+                    </div>
+                  )}
                   <p style={{ fontSize: "10px", color: "#94a3b8", margin: 0, textTransform: "uppercase", letterSpacing: "1px", fontWeight: 600 }}>
                     Developed by SHIKUR EBRAHIM
                   </p>
